@@ -1,84 +1,78 @@
+document.addEventListener('DOMContentLoaded', function() {
 
-const USERS_URL = 'http://localhost:3000/api/v1/users';
-const DODGER = document.getElementById('dodger');
-const GAME = document.getElementById('game');
-const START = document.getElementById('start')
-const OVERLAY = document.getElementById("overlay")
-const PAUSE = document.getElementById("pause")
-const HIGH_SCORE = document.getElementById('high-scores')
-const SCORE_DISPLAY = document.getElementById("score")
-const playAgain = document.getElementById("playAgain")
-const GAME_HEIGHT = 600;
-const GAME_WIDTH = window.innerWidth;
-const UP_ARROW = 38 ;// use e.which!
-const DOWN_ARROW = 40; // use e.which!
-const RIGHT_ARROW = 39;
-const LEFT_ARROW = 37
-//Submit score end of game
-const modal = document.getElementById('myModal')
-const scoreSubmit = document.getElementById('score-form')
-const submitText = document.getElementById('score-text')
-const modalContent = document.getElementById('modal-content')
-// audio
-var audio = document.createElement("audio")
-audio.src = 'assets/audio2.mp3'
-var loseAudio = document.createElement("audio")
-loseAudio.src = 'assets/guylose.mp3'
-//other
-let bg = document.createElement("div");
-let ROCKS = []
-let MECHA_SIZE=40
-let FIERI_SIZE= 30
-let ROCK_SPEED = 5
-let stopMotion = false;
-let rockGenerateTime = 1100
-let score = 0;
-var gameInterval = null;
-const impactLocation = GAME_WIDTH-FIERI_SIZE-MECHA_SIZE;
+  let DODGER = document.createElement("div");
+  DODGER.setAttribute("id", "dodger");
+  DODGER.style.width = '85px';
+  DODGER.style.height = '100px';
+  DODGER.style.top = '280px';
+  DODGER.style.left = '25px';
 
-const topScoreDisplay = document.getElementById("high-scores");
-topScoreDisplay.style.visibility = "hidden";
-const instructionsDisplay = document.getElementById("instructions");
-instructionsDisplay.style.visibility = "hidden";
-DODGER.style.left = "25px";
-const nomAudio =  new Audio('src/nom.mp3');
+  const GAME = document.getElementById('game');
+  const START = document.getElementById('start');
+  const OVERLAY = document.getElementById("overlay");
+  const PAUSE = document.getElementById("pause");
+  const SCORE_DISPLAY = document.getElementById("score");
+  const playAgain = document.getElementById("playAgain");
+  const GAME_HEIGHT = window.innerHeight;
+  const GAME_WIDTH = window.innerWidth;
+  const UP_ARROW = 38;
+  const DOWN_ARROW = 40;
+  const RIGHT_ARROW = 39;
+  const LEFT_ARROW = 37;
+  //Submit score end of game
 
-instructionsDisplay.addEventListener("click", function(e){
-  toggleInstructions();
-});
+  const modal = document.getElementById('myModal')
+  const scoreSubmit = document.getElementById('score-form')
+  const submitText = document.getElementById('score-text')
+  const modalContent = document.getElementById('modal-content')
+  
+  // audio
+  var audio = document.createElement("audio")
+  audio.src = 'assets/audio2.mp3'
+  var loseAudio = document.createElement("audio")
+  loseAudio.src = 'assets/guylose.mp3'
+  
+  //other
+  let bg = document.createElement("div");
+  let ROCKS = []
+  let MECHA_SIZE=40
+  let FIERI_SIZE= 30
+  let ROCK_SPEED = 5
+  let stopMotion = false;
+  let rockGenerateTime = 1100
+  let score = 0;
+  var gameInterval = null;
+  const impactLocation = GAME_WIDTH-FIERI_SIZE-MECHA_SIZE;
+  let bees = [];
 
-ROCK_SPEED = setInterval(speedIncrease, 10000)
+  const instructionsDisplay = document.getElementById("instructions");
+  instructionsDisplay.style.visibility = "hidden";
+  DODGER.style.left = "25px";
+  const nomAudio =  new Audio('src/nom.mp3');
 
-function speedIncrease() {
-  if (ROCK_SPEED<14) ++ROCK_SPEED
-}
+  instructionsDisplay.addEventListener("click", function(e){
+    toggleInstructions();
+  });
 
+  document.getElementById("instructions_link").addEventListener("click", function(e){
+    toggleInstructions();
+  })
 
-  // GET request for high scores
-  fetch(USERS_URL)
-  .then(response => response.json())
-  .then(json=> highScore(json))
+  ROCK_SPEED = setInterval(speedIncrease, 10000)
 
-  function highScore (array) {
-    let sortScores = [...array].sort((a,b)=>{
-      return b.scores[0].score - a.scores[0].score;
-    })
-    for (let i =0;i<5;i++){
-      tr = document.createElement('tr')
-      let obj =sortScores[i]
-      tr.innerHTML = `<th>${obj.name} </th>
-      <th>${obj.scores[0].score}</th>`
-      HIGH_SCORE.append(tr)
-    }
+  function speedIncrease() {
+    if (ROCK_SPEED<14) ++ROCK_SPEED
   }
-  // END of high scores
+
+  START.addEventListener("click", function(e){
+    start();
+  } );
 
 
   //Start Game
 
   function start() {
-    nomAudio.src = 'src/nom.mp3'
-    nomAudio.pause()
+    GAME.appendChild(DODGER);
     window.addEventListener('keydown', moveDodger);
     bgLoop();
     OVERLAY.style.display = "none";
@@ -87,7 +81,6 @@ function speedIncrease() {
     gameInterval = setInterval(function() {
       createRock(Math.floor(Math.random() *  (GAME_HEIGHT - 20)))
     }, rockGenerateTime)
-    audio.play()
   }
   // End Start
 
@@ -110,7 +103,7 @@ function speedIncrease() {
   }
 
   function createRock(x) {
-    //x is the location of where the rock will appear on the right side
+    
     const rock = document.createElement('div')
     rock.className = 'rock'
     rock.style.top = `${x}px`
@@ -119,22 +112,15 @@ function speedIncrease() {
     rock.style.left = left
     GAME.appendChild(rock)
 
-    nomInterval = setInterval(function() {
-      nom();
-    }, 500);
-
     function moveRock() {
       if (stopMotion === false){
         rock.style.left = `${left -= ROCK_SPEED}px`;
         let rockLocation = rock.style.left.replace(/[^0-9.]/g, "");
 
         if (checkCollision(rock)){
-          clearInterval(nomInterval);
           return endGame()
         }else if (rockLocation <= 25 ){
           console.log(`Goodbye, ${rock}.`);
-          clearInterval(nomInterval);
-          nomAudio.pause();
           rock.remove();
           score += 10
           updateScore();
@@ -154,18 +140,11 @@ function speedIncrease() {
 
 //BEGIN End Game functions
   function endGame() {
-    audio.pause();
-    audio.currentTime = 0
-    loseAudio.play()
-    loseAudio.volume = 0.3
     stopMotion = true;
-    clearInterval(gameInterval)
     ROCK_SPEED=0
     window.removeEventListener('keydown', moveDodger)
     for(let i = 0; i < ROCKS.length; i++){
       ROCKS[i].remove()
-      clearInterval(nomInterval);
-      nomAudio.src = "";
     }
     var closeButton = document.getElementsByClassName("close")[0]
     modal.style.display = "block";
@@ -174,7 +153,7 @@ function speedIncrease() {
     closeButton.onclick = function() {
       modal.style.display = "none";
     }
-    console.log(modalContent)
+
     scoreSubmit.addEventListener("submit", (e) => {
       e.preventDefault()
       let name = document.getElementById('score-input')
@@ -192,134 +171,129 @@ function speedIncrease() {
 
       playAgain.addEventListener("click", (r) => {
         r.preventDefault()
-        loseAudio.pause()
-        loseAudio.currentTime = 0
         playAgain.style.display= "none"
         resetGame()
       })
     })
   }
-//END of game function
+  //END of game function
 
-//RESET game
-function resetGame() {
-  OVERLAY.style.display = "block";
-  PAUSE.style.display="none"
-  SCORE_DISPLAY.style.visibility = "hidden"
-  modal.style.display="none"
-  stopMotion= false
-  DODGER.style.top = "280px";
-  DODGER.style.left = "25px";
-  score = 0
-  updateScore()
-  ROCKS= []
-  deleteAllRocks()
-  // stopBackground()
-  OVERLAY.addEventListener('click', function(e) {
-    start()
-
-  });
-}
-
-//Supporting functions
-
-function deleteAllRocks(){
-  for (const rock of ROCKS){
-    rock.remove();
-    clearInterval(nomInterval);
-    nomAudio.pause();
+  //RESET game
+  function resetGame() {
+    OVERLAY.style.display = "block";
+    PAUSE.style.display="none";
+    SCORE_DISPLAY.style.visibility = "hidden";
+    modal.style.display="none";
+    stopMotion= false;
+    DODGER.style.top = "280px";
+    DODGER.style.left = "25px";
+    score = 0;
+    updateScore()
+    ROCKS= []
+    deleteAllRocks()
+    // stopBackground()
+    OVERLAY.addEventListener('click', function(e) {
+      start()
+    });
   }
-}
 
-PAUSE.addEventListener('click', pauseGame)
-window.addEventListener('keydown', pauseGame);
-function pauseGame(e){
-  let action = e.target.dataset.pause
-  if (action === "pauseGame"){
-    alert("Game has been Paused \n Click okay to resume")
-  }
-  if (e.keyCode ===13){
-    alert("Game has been Paused \n Click okay to resume")
+  //Supporting functions
 
-  }
-}
-//End of support functions
-
-
-//Dodger Movement functions
-
-  function moveDodger(e) {
-    let action = e.which
-    if (action === UP_ARROW){
-      moveDodgerUp()
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    if (action === DOWN_ARROW){
-      moveDodgerDown()
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    if (action === RIGHT_ARROW){
-      moveDodgerRight()
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    if (action === LEFT_ARROW){
-      moveDodgerLeft()
-      e.preventDefault()
-      e.stopPropagation()
+  function deleteAllRocks(){
+    for (const rock of ROCKS){
+      rock.remove();
     }
   }
 
-  function moveDodgerUp() {
-    window.requestAnimationFrame(function() {
-      const top = positionToInteger(DODGER.style.top)
-      if (top > 0){
-        DODGER.style.top = `${top-18}px`;
+  PAUSE.addEventListener('click', pauseGame)
+  window.addEventListener('keydown', pauseGame);
+  function pauseGame(e){
+    let action = e.target.dataset.pause
+    if (action === "pauseGame"){
+      alert("Game has been Paused \n Click okay to resume")
+    }
+    if (e.keyCode ===13){
+      alert("Game has been Paused \n Click okay to resume")
+    }
+  }
+  //End of support functions
+
+
+  //Dodger Movement functions
+
+    function moveDodger(e) {
+      let action = e.which
+      if (action === UP_ARROW){
+        moveDodgerUp()
+        e.preventDefault()
+        e.stopPropagation()
       }
-    })
-  }
-
-  function moveDodgerDown() {
-    window.requestAnimationFrame(function(){
-      const down = positionToInteger(DODGER.style.top)
-      if (down < 496){
-        DODGER.style.top = `${down + 18}px`
+      if (action === DOWN_ARROW){
+        moveDodgerDown()
+        e.preventDefault()
+        e.stopPropagation()
       }
-    })
-  }
+      if (action === RIGHT_ARROW){
+        moveDodgerRight()
+        e.preventDefault()
+        e.stopPropagation()
+      }
+      if (action === LEFT_ARROW){
+        moveDodgerLeft()
+        e.preventDefault()
+        e.stopPropagation()
+      }
+    }
 
-  function moveDodgerRight() {
-    window.requestAnimationFrame(function() {
-      const left = positionToInteger(DODGER.style.left)
-      if (left){
-        if (left < GAME_WIDTH){
-          DODGER.style.left = `${left+8}px`;
+    function moveDodgerUp() {
+      window.requestAnimationFrame(function() {
+        const top = positionToInteger(DODGER.style.top)
+        // console.log(top)
+        if (top > 10){
+          DODGER.style.top = `${top-18}px`;
         }
-      }else{
-        DODGER.style.left = `${25+8}px`;
-      }
-    })
-  }
+      })
+    }
 
-  function moveDodgerLeft() {
-    window.requestAnimationFrame(function() {
-      const left = positionToInteger(DODGER.style.left)
-      if (left){
+    function moveDodgerDown() {
+      window.requestAnimationFrame(function(){
+        const down = positionToInteger(DODGER.style.top)
+        if (down + 110 < GAME_HEIGHT){
+          DODGER.style.top = `${down + 18}px`
+        }
+      })
+    }
+
+    function moveDodgerRight() {
+      window.requestAnimationFrame(function() {
+        const left = positionToInteger(DODGER.style.left)
+        if (left){
+          if (left < GAME_WIDTH){
+            DODGER.style.left = `${left+8}px`;
+          }
+        }else{
+          DODGER.style.left = `${25+8}px`;
+        }
+      })
+    }
+
+    function moveDodgerLeft() {
+      window.requestAnimationFrame(function() {
+        const left = positionToInteger(DODGER.style.left)
+        if (left){
+          if (left > 25){
+            DODGER.style.left = `${left-8}px`;
+          }
+        }else{
+          DODGER.style.left = `${25}px`;
+        }
         if (left > 25){
           DODGER.style.left = `${left-8}px`;
         }
-      }else{
-        DODGER.style.left = `${25}px`;
-      }
-      if (left > 25){
-        DODGER.style.left = `${left-8}px`;
-      }
-    })
-  }
+      })
+    }
 
-//END Movement
+  //END Movement
 
 
   function updateScore(){
@@ -334,81 +308,103 @@ function pauseGame(e){
 
 
 
-// BACKGROUND functions
-function createBG(){
-  bg.className = 'bg'
-  bg.style.right = '-100px';
-  GAME.appendChild(bg);
-}
-// ENDLESS BACKGROUND BEGIN
+  // BACKGROUND functions
 
-function bgLoop(yOn) {
-  let bg = document.createElement('div');
-  bg.className = 'bg';
-  GAME.appendChild(bg);
-  if (yOn){
-    bg.style.right = `-${4778}px`;
-  }else{
-    bg.style.right = `-${4778 - GAME_WIDTH}px`;
+  function createBG(){
+    bg.className = 'bg'
+    bg.style.right = '-100px';
+    GAME.appendChild(bg);
   }
+  // ENDLESS BACKGROUND BEGIN
 
-  function movebg() {
-    if (positionToInteger(bg.style.right) < GAME_WIDTH){
-      let top = positionToInteger(bg.style.right) + 1
-      bg.style.right = `${top}px`
-      window.requestAnimationFrame(movebg);
-      if (positionToInteger(bg.style.right) === 0) {
-        bgLoop(true);
-      }
+  function bgLoop(yOn) {
+    let bg = document.createElement('div');
+    bg.className = 'bg';
+    GAME.appendChild(bg);
+    if (yOn){
+      bg.style.right = `-${4778}px`;
     }else{
-      bg.remove()
+      bg.style.right = `-${4778 - GAME_WIDTH}px`;
     }
+
+    function movebg() {
+      if (positionToInteger(bg.style.right) < GAME_WIDTH){
+        let top = positionToInteger(bg.style.right) + 1
+        bg.style.right = `${top}px`
+        window.requestAnimationFrame(movebg);
+        if (positionToInteger(bg.style.right) === 0) {
+          bgLoop(true);
+        }
+      }else{
+        bg.remove()
+      }
+    }
+    movebg()
+    return bg
   }
-  movebg()
-  return bg
-}
 
-// ENDLESS BACKGROUND END
+  // ENDLESS BACKGROUND END
 
 
-scoreSubmit.addEventListener("submit", (e) => {
-  e.preventDefault()
-  let name = document.getElementById('score-input')
-  name.value
-})
+  scoreSubmit.addEventListener("submit", (e) => {
+    e.preventDefault()
+    let name = document.getElementById('score-input')
+    name.value
+  });
 
-
-function toggleTopScores(){
-  if (topScoreDisplay.style.visibility === "hidden"){
-    topScoreDisplay.style.visibility = "visible";
-    if (instructionsDisplay.style.visibility === "visible"){
+  function toggleInstructions(){
+    if (instructionsDisplay.style.visibility === "hidden"){
+      instructionsDisplay.style.visibility = "visible";
+    }else{
       instructionsDisplay.style.visibility = "hidden";
     }
-  }else{
-    topScoreDisplay.style.visibility = "hidden";
   }
-}
 
-function toggleInstructions(){
-  if (instructionsDisplay.style.visibility === "hidden"){
-    instructionsDisplay.style.visibility = "visible";
-    if (topScoreDisplay.style.visibility === "visible"){
-      topScoreDisplay.style.visibility = "hidden";
+  DODGER.addEventListener("click", function(e){
+    console.log(DODGER.style.top);
+  });
+});
+
+let beeId = 0
+
+class Bee {
+  constructor(type="regular") {
+    this.bee = `bee${++beeId}`;
+    this.type = type;
+    this.id = beeId;
+    this.createSelf();
+  }
+
+  createSelf() {
+    let newBeee = document.createElement("div");
+    newBeee.className = "rock";
+    newBeee.style.top = "25px";
+    newBeee.id = this.id;
+    newBeee.style.left = `${window.innerWidth - 40}px`;
+    document.getElementById('game').appendChild(newBeee);
+    this.addListener(newBeee);
+    this.moveBee(newBeee);
+  }
+
+  destroySelf(elementInstance){
+    elementInstance.remove();
+  }
+
+  addListener(elementInstance){
+    elementInstance.addEventListener("click", function(e){
+      this.remove();
+    })
+  }
+
+  moveBee(elementInstance) {
+    if (elementInstance.style.left.replace(/[^0-9.]/g, "") > 25){
+      let left = elementInstance.replace(/[^0-9.]/g, "");
+      console.log("inside inside moveBee");
+      elementInstance.style.left = `${left -= 10}px`
+      window.requestAnimationFrame(this.moveBee)
+    }else{
+      // this.destroySelf(elementInstance);
     }
-  }else{
-    instructionsDisplay.style.visibility = "hidden";
   }
-}
 
-function nom(){
-  nomAudio.play();
 }
-
-  // cLog("top dodger",dodgerTopEdge)
-  // cLog("bottom dodger",dodgerBottomEdge)
-  // cLog("rock top",rockTopEdge)
-  // cLog("rock Bottom",rockBottomEdge)
-  // cLog("first", (rockTopEdge <= dodgerTopEdge && rockBottomEdge >= dodgerTopEdge))
-  // cLog("Second", (rockTopEdge >= dodgerTopEdge && rockBottomEdge <= dodgerBottomEdge))
-  //     cLog("third",(rockTopEdge <= dodgerBottomEdge && rockBottomEdge >= dodgerBottomEdge))
-// })

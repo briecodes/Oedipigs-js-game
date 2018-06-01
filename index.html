@@ -5,38 +5,29 @@
     <link rel="icon" href="src/guy.png">
     <link rel="stylesheet" type="text/css" href="src/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700" rel="stylesheet">
   </head>
 
   <body>
     <div id="game">
       <div id="overlay">
-          <div id="logo"></div>
-          <h1>
-              <a href="javascript:start()" class="start_screen_links" id="start" >
-                START
+          <h4>Gir’s</h4>
+          <h1 class="headline">ENDLESS ADVENUTRE</h1>
+          <div class="divider"></div>
+          <p>
+              <a href="#" class="start_screen_links" id="start" >
+                START >
               </a>
-          </h1>
+          </p>
 
-          <h5>
-            <a href="javascript:toggleTopScores()" class="start_screen_links" id="top_scores_link">
-              TOP SCORES
+          <p>
+            <a href="#" class="start_screen_links" id="instructions_link">
+              INSTRUCTIONS >
             </a>
-          </h5>
-
-          <h5>
-            <a href="javascript:toggleInstructions()" class="start_screen_links" id="instructions_link">
-              INSTRUCTIONS
-            </a>
-          </h5>
+          </p>
 
           </h3>
 
-          <table id='high-scores'>
-            <tr>
-              <th>| Name      |</th>
-              <th>|     Score |</th>
-            </tr>
-          </table>
       </div> <!-- END #overlay -->
 
       <div class="pauseBtn" id="pause"  data-pause="pauseGame">
@@ -45,7 +36,7 @@
 
       <div id="score">SCORE: <span id="scorenumber">0</span></div>
 
-      <div id="dodger" style="top:280px;"></div>
+      <!-- <div id="dodger" style="top:280px;"></div> -->
       </div>
     </div>
 
