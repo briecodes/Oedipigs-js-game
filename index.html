@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Flavortown 2033</title>
-    <link rel="icon" href="src/guy.png">
+    <link rel="icon" href="assets/guy.png">
     <link rel="stylesheet" type="text/css" href="src/styles.css">
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700" rel="stylesheet">
@@ -10,65 +10,76 @@
 
   <body>
     <div id="game">
-      <div id="overlay">
-          <h4>Gir’s</h4>
-          <h1 class="headline">ENDLESS ADVENUTRE</h1>
-          <div class="divider"></div>
-          <p>
-              <a href="#" class="start_screen_links" id="start" >
-                START >
-              </a>
-          </p>
 
-          <p>
-            <a href="#" class="start_screen_links" id="instructions_link">
-              INSTRUCTIONS >
-            </a>
-          </p>
+      <div class="pauseBtn" id="pause" data-pause="pauseGame"></div>
+      <div id="score">SCORE:
+        <span id="scorenumber">0</span>
+      </div>
+
+      <h1 id="stages">Stage One</h1>
+
+      <div id="overlay">
+        <div id="start-screen">
+          <div>
+            <h4>Gir’s</h4>
+            <h1 class="headline">ENDLESS ADVENUTRE</h1>
+            <div class="divider"></div>
+            <p>
+                <a href="#" class="start_screen_links" id="start" >
+                  START >
+                </a>
+            </p>
+
+            <p>
+              <a href="#" class="start_screen_links" id="instructions_link">
+                INSTRUCTIONS >
+              </a>
+            </p>
+
+            <div id="instructions">
+              <div class="instruction-cell">This is you:
+                <br>
+                <img class="thumb" src="assets/gir.png" alt="Ship">
+              </div>
+              <div class="instruction-cell">You move with these:
+                <br>
+                <img class="thumb" src="assets/arrow_keys.png" alt="Up/Down Arrow Keys">
+              </div>
+              <div class="instruction-cell">Avoid:
+                <br>
+                <img class="thumb" src="assets/bee.png" alt="Avoid Fieri">
+              </div>
+              <div class="clear"></div>
+            </div>
+          </div>
 
           </h3>
+        </div> <!-- END #start-screen -->
+
+        <!-- The Modal -->
+        <div id="myModal">
+
+          <h4>WELCOME TO DOOM!</h4>
+          <h1 id="final-score" class="headline"></h1>
+          <div class="divider"></div>
+
+          <p>
+            <a href="#" class="start_screen_links" id="playAgain">Play Again ></a>
+          </p>
+
+          <p>
+            <form id="score-form" class="score-form" action="index.html" method="post">
+              <center>
+                 <h6>Submit Your Name to the Leaderboard:</h6>
+                <input id="score-input" type="text" name="name" value="">
+                <button type="submit">Submit Score</button>
+              </center>
+            </form>
+          </p>
+        </div> <!-- END #myModal -->
 
       </div> <!-- END #overlay -->
-
-      <div class="pauseBtn" id="pause"  data-pause="pauseGame">
-
-      </div>
-
-      <div id="score">SCORE: <span id="scorenumber">0</span></div>
-
-      <!-- <div id="dodger" style="top:280px;"></div> -->
-      </div>
-    </div>
-
-    <!-- The Modal -->
-      <div id="myModal" class="modal">
-        <!-- Modal content -->
-        <div id="modal-content" class="modal-content">
-          <img class="close"src="src/sorry-not-sorry.jpg" alt="">
-          <p>You Lose. Welcome to Flavortown.</p>
-          <p id="score-text">Submit Your Name to the Leaderboard:</p>
-          <form id="score-form" class="score-form" action="index.html" method="post">
-            <center>
-              <input id=
-              "score-input" type="text" name="name" value="">
-              <button type="submit">Submit Score</button>
-            </center>
-          </form>
-          <center>
-            <button id="playAgain" type="button" style="display:none;" name="button">Play Again?</button>
-          </center>
-        </div>
-      </div>
-
-      <div id="instructions">
-        <div class="instruction-cell">This is you:<br>
-          <img class="thumb" src="src/ship.png" alt="Ship"></div>
-        <div class="instruction-cell">You move with these:<br>
-          <img class="thumb" src="src/arrow_keys.png" alt="Up/Down Arrow Keys"></div>
-        <div class="instruction-cell">Avoid:<br>
-          <img class="thumb" src="src/guy.png" alt="Avoid Fieri"></div>
-        <div class="clear"></div>
-      </div>
+    </div> <!-- END #game -->
 
     <script src="src/index.js"></script>
   </body>
