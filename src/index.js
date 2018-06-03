@@ -304,8 +304,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     generateSpeed(){
-      // return Math.floor(Math.random() * (20 - 5)) + 5;
-      return 2;
+      return Math.floor(Math.random() * (20 - 5)) + 5;
+      // return 2;
     }
 
     generateVertialLocation(){
