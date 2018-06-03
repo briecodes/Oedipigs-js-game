@@ -27,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let gameInterval = null;
   let gameEnd = false;
   let beesArr = [];
+  let beesObjs = {};
   let score = 0;
   let timerId
 
@@ -56,6 +57,7 @@ document.addEventListener('DOMContentLoaded', function() {
   playAgain.addEventListener("click", resetGame);
   pause.addEventListener('click', pauseGame);
   window.addEventListener('keydown', pauseGame);
+  window.addEventListener("keyup", shoot)
 
 
   // GAME START / STOP / RESET FUNCTIONS
@@ -242,13 +244,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
   
   // BEE CLASS
-  let beeId = 0
+  let beeId = 0;
 
   class Bee {
     constructor(type="regular") {
       this.bee = `bee${++beeId}`;
       this.type = type;
       this.id = beeId;
+      this.dead = false;
+      beesObjs[beeId] = this;
       this.createSelf();
     }
 
@@ -263,12 +267,11 @@ document.addEventListener('DOMContentLoaded', function() {
       newBeee.style.top = vLocation + "px";
       newBeee.id = this.id;
       newBeee.style.left = `${window.innerWidth - 40}px`;
-      document.getElementById('game').appendChild(newBeee);
+      game.appendChild(newBeee);
       this.addListener(newBeee);
 
       function moveBee() {
-        if (gameEnd){
-
+        if (gameEnd || beeObject.dead){
         }else{
           let left = newBeee.style.left.replace(/[^0-9.]/g, "");
           if (beeObject.checkCollision(newBeee)) {
@@ -281,6 +284,7 @@ document.addEventListener('DOMContentLoaded', function() {
             score += 10;
             updateScore();
             beesArr.shift();
+            delete beesObjs[beeObject.id];
             beeObject.destroySelf(newBeee);
           } 
         }
@@ -300,7 +304,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     generateSpeed(){
-      return Math.floor(Math.random() * (20 - 5)) + 5;
+      // return Math.floor(Math.random() * (20 - 5)) + 5;
+      return 2;
     }
 
     generateVertialLocation(){
@@ -324,6 +329,72 @@ document.addEventListener('DOMContentLoaded', function() {
 
     }
 
+  }
+
+  let laserId = 0;
+
+  class Laser {
+    constructor(type = "regular") {
+      this.id = ++laserId;
+      this.createSelf();
+    }
+
+    createSelf() {
+      let laserObject = this;
+      let pew = document.createElement("div");
+      pew.setAttribute("class", "laser");
+      pew.id = this.id;
+      pew.style.top = (parseInt(flyingGir.style.top.replace(/[^0-9.]/g, "")) + 45) + "px";
+      pew.style.left = (parseInt(flyingGir.style.left.replace(/[^0-9.]/g, "")) + 80) + "px";
+      game.appendChild(pew);
+
+      function shootLaser() {
+        if (gameEnd) {
+        } else {
+          let left = parseInt(pew.style.left.replace(/[^0-9.]/g, ""));
+          if (laserObject.checkCollision(pew)) {
+            score += 30;
+            updateScore();
+            laserObject.destroySelf(pew);
+          } else if (left < game_width - 20) {
+            pew.style.left = `${left += 15}px`;
+            window.requestAnimationFrame(shootLaser)
+          } else {
+            laserObject.destroySelf(pew);
+          }
+        }
+      }
+
+      shootLaser();
+    }
+
+    destroySelf(elementInstance) {
+      elementInstance.remove();
+    }
+
+    checkCollision(laser) {
+      for (const bee of beesArr){
+        let laserTopEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, "")) - 10;
+        let laserBottomEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, "")) + 10;
+        let laserLeftEdge = parseInt(laser.style.left.replace(/[^0-9.]/g, ""));
+        let laserRightEdge = parseInt(laser.style.left.replace(/[^0-9.]/g, "")) + 30;
+
+        let beeTopEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, "")) - 10;
+        let beeBottomEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, "")) + 80;
+        let beeLeftEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, ""));
+        let beeRightEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, "")) + 80;
+
+        if (laserTopEdge > beeTopEdge && laserBottomEdge < beeBottomEdge && laserLeftEdge > beeLeftEdge && laserRightEdge < beeRightEdge) {
+          let beeOb = beesObjs[bee.id];
+          beeOb["dead"] = true;
+          delete beesObjs[bee.id];
+          beesArr.splice(bee);
+          bee.remove();
+          return true;
+        };
+      }
+
+    }
   }
 
 
@@ -363,6 +434,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
 
+  function shoot(e){
+    if (e.keyCode === 32){
+      new Laser;
+    }
+  }
+
   scoreSubmit.addEventListener("submit", (e) => {
     e.preventDefault()
     let name = document.getElementById('score-input')
@@ -393,7 +470,6 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function stageSet(time) {
-    console.log(time);
     if (time <= 800 && time >= 600) {
       stages.innerText = "Stage 1";
     } else if (time <= 599 && time >= 400) {
