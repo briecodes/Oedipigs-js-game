@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // CREATE GIR
   let flyingGir = document.createElement("div");
   flyingGir.setAttribute("id", "gir");
-  flyingGir.style.width = '85px';
+  flyingGir.style.width = '91px';
   flyingGir.style.height = '100px';
   flyingGir.style.top = '280px';
   flyingGir.style.left = '25px';

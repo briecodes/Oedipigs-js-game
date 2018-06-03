@@ -120,17 +120,6 @@ table{
   width: 80px;
 }
 
-#logo {
-  background-image: url('logo.png');
-  background-size: cover;
-  background-repeat: no-repeat;
-  width: 254px;
-  height: 75px;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 50px;
-}
-
 .start_screen_links {
   color: white;
   position: relative;
@@ -146,6 +135,36 @@ table{
   display: block;
   margin-top: -55px;
   margin-bottom: 10px;
+}
+
+#standing-gir {
+  background-image: url('../assets/girnpig.png');
+  display: inline-block;
+  height: 100px;
+  width: 40px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-left: -425px;
+  margin-bottom: -20px;
+}
+
+.solo-bee, .solo-bee2 {
+  background-image: url('../assets/bee2.png');
+  display: inline-block;
+  height: 40px;
+  width: 40px;
+  background-size: cover;
+  background-repeat: no-repeat;
+  margin-left: 200px;
+  margin-bottom: -80px;
+}
+
+.solo-bee2 {
+  margin-left: 235px;
+}
+
+.minor {
+  margin-bottom: -40px;
 }
 
 
