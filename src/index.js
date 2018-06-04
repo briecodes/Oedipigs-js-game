@@ -54,10 +54,9 @@ document.addEventListener('DOMContentLoaded', function() {
     startGame();
   });
   
-  playAgain.addEventListener("click", resetGame);
+  playAgain.addEventListener("click", resetGame); 
   pause.addEventListener('click', pauseGame);
-  window.addEventListener('keydown', pauseGame);
-  window.addEventListener("keyup", shoot)
+  window.addEventListener('keydown', keyPressHandler);
 
 
   // GAME START / STOP / RESET FUNCTIONS
@@ -135,30 +134,21 @@ document.addEventListener('DOMContentLoaded', function() {
     let action = e.which
     if (action === up_arrow){
       moveDodgerUp()
-      e.preventDefault()
-      e.stopPropagation()
     }
     if (action === down_arrow){
       moveDodgerDown()
-      e.preventDefault()
-      e.stopPropagation()
     }
     if (action === right_arrow){
       moveDodgerRight()
-      e.preventDefault()
-      e.stopPropagation()
     }
     if (action === left_arrow){
       moveDodgerLeft()
-      e.preventDefault()
-      e.stopPropagation()
     }
   }
 
   function moveDodgerUp() {
     window.requestAnimationFrame(function() {
       const top = positionToInteger(flyingGir.style.top)
-      // console.log(top)
       if (top > 10){
         flyingGir.style.top = `${top-18}px`;
       }
@@ -305,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     generateSpeed(){
       return Math.floor(Math.random() * (20 - 5)) + 5;
-      // return 2;
+      // return 1;
     }
 
     generateVertialLocation(){
@@ -405,6 +395,25 @@ document.addEventListener('DOMContentLoaded', function() {
 
   //Supporting functions
 
+  function keyPressHandler(e) {
+    let action = e.which
+    e.preventDefault()
+    e.stopPropagation()
+    if (e.keyCode === 13 || e.target.dataset.pause === "pauseGame") {
+      pauseGame(e);
+    }else if (e.keyCode === 32){
+      shoot();
+    }else if (action === up_arrow){
+      moveDodgerUp()
+    }else if (action === down_arrow){
+      moveDodgerDown()
+    }else if (action === right_arrow){
+      moveDodgerRight()
+    }else if (action === left_arrow){
+      moveDodgerLeft()
+    }
+  }
+
   function updateScore() {
     let scoreNumber = document.getElementById("scorenumber");
     scoreNumber.innerText = score;
@@ -425,19 +434,11 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function pauseGame(e) {
-    let action = e.target.dataset.pause
-    if (action === "pauseGame") {
-      alert("Game paused. Click OK to resume")
-    }
-    if (e.keyCode === 13) {
-      alert("Game paused. Click OK to resume")
-    }
+    alert("Game paused. Click OK to resume")
   }
 
   function shoot(e){
-    if (e.keyCode === 32){
-      new Laser;
-    }
+    new Laser;
   }
 
   scoreSubmit.addEventListener("submit", (e) => {
