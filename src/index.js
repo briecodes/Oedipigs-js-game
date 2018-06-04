@@ -100,19 +100,19 @@ document.addEventListener('DOMContentLoaded', function() {
     var closeButton = document.getElementsByClassName("close")[0];
     finalScore.innerText = "Your Score: " + score;
 
-    scoreSubmit.addEventListener("submit", (e) => {
-      e.preventDefault()
-      let name = document.getElementById('score-input')
+    // scoreSubmit.addEventListener("submit", (e) => {
+    //   e.preventDefault()
+    //   let name = document.getElementById('score-input')
 
-      fetch(USERS_URL, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(
-        {name: `${name.value}`,
-        score: score})
-      }).then(response => response.json()).then(json => console.log(json))
-      scoreSubmit.style.display="none"
-    })
+    //   fetch(USERS_URL, {
+    //     method: 'POST',
+    //     headers: {'Content-Type':'application/json'},
+    //     body: JSON.stringify(
+    //     {name: `${name.value}`,
+    //     score: score})
+    //   }).then(response => response.json()).then(json => console.log(json))
+    //   scoreSubmit.style.display="none"
+    // })
   }
 
   function resetGame() {
@@ -435,11 +435,11 @@ document.addEventListener('DOMContentLoaded', function() {
     new Laser;
   }
 
-  scoreSubmit.addEventListener("submit", (e) => {
-    e.preventDefault()
-    let name = document.getElementById('score-input')
-    name.value
-  });
+  // scoreSubmit.addEventListener("submit", (e) => {
+  //   e.preventDefault()
+  //   let name = document.getElementById('score-input')
+  //   name.value
+  // });
 
   function toggleInstructions() {
     if (instructionsDisplay.style.visibility === "hidden" || instructionsDisplay.style.display === "none") {

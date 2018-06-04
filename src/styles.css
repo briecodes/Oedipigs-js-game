@@ -268,3 +268,8 @@ table{
   background-repeat: no-repeat;
   position: absolute;
 }
+
+#hide-me {
+  visibility: hidden;
+  display: none; 
+}
