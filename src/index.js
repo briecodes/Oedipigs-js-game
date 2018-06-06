@@ -28,6 +28,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let gameEnd = false;
   let beesArr = [];
   let beesObjs = {};
+  const lasersArr = [];
+  const laserObjs = {};
   let score = 0;
   let timerId
 
@@ -54,10 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
     startGame();
   });
   
-  playAgain.addEventListener("click", resetGame);
+  playAgain.addEventListener("click", resetGame); 
   pause.addEventListener('click', pauseGame);
-  window.addEventListener('keydown', pauseGame);
-  window.addEventListener("keyup", shoot)
+  window.addEventListener('keydown', keyPressHandler);
 
 
   // GAME START / STOP / RESET FUNCTIONS
@@ -70,7 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
     blink(stages);
     bgLoop();
     game.appendChild(flyingGir);
-    window.addEventListener('keydown', moveDodger);
+    window.addEventListener('keydown', keyPressHandler);
     timerId = setTimeout(function request() {
       new Bee;
       rockGenerateTime -= 10;
@@ -83,7 +84,8 @@ document.addEventListener('DOMContentLoaded', function() {
     gameEnd = true;
     clearTimeout(timerId);
     clearInterval(gameInterval);
-    deleteAllRocks();
+    deleteAllElements(beesArr);
+    deleteAllElements(lasersArr);
     flyingGir.remove();
 
     hide(pause);
@@ -94,30 +96,31 @@ document.addEventListener('DOMContentLoaded', function() {
     show(modal, "table-cell");
     show(scoreSubmit);
 
-    window.removeEventListener('keydown', moveDodger);
+    window.removeEventListener('keydown', keyPressHandler);
     var closeButton = document.getElementsByClassName("close")[0];
     finalScore.innerText = "Your Score: " + score;
 
-    scoreSubmit.addEventListener("submit", (e) => {
-      e.preventDefault()
-      let name = document.getElementById('score-input')
+    // scoreSubmit.addEventListener("submit", (e) => {
+    //   e.preventDefault()
+    //   let name = document.getElementById('score-input')
 
-      fetch(USERS_URL, {
-        method: 'POST',
-        headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(
-        {name: `${name.value}`,
-        score: score})
-      }).then(response => response.json()).then(json => console.log(json))
-      scoreSubmit.style.display="none"
-    })
+    //   fetch(USERS_URL, {
+    //     method: 'POST',
+    //     headers: {'Content-Type':'application/json'},
+    //     body: JSON.stringify(
+    //     {name: `${name.value}`,
+    //     score: score})
+    //   }).then(response => response.json()).then(json => console.log(json))
+    //   scoreSubmit.style.display="none"
+    // })
   }
 
   function resetGame() {
     rockGenerateTime = 810;
     score = 0;
     updateScore();
-    deleteAllRocks();
+    deleteAllElements(lasersArr);
+    deleteAllElements(beesArr);
 
     hide(modal);
     show(homeScreen, "table-cell");
@@ -128,44 +131,16 @@ document.addEventListener('DOMContentLoaded', function() {
     gameEnd = false;
   }
 
-
-  //GIR MOVEMENT FUNCTIONS
-
-  function moveDodger(e) {
-    let action = e.which
-    if (action === up_arrow){
-      moveDodgerUp()
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    if (action === down_arrow){
-      moveDodgerDown()
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    if (action === right_arrow){
-      moveDodgerRight()
-      e.preventDefault()
-      e.stopPropagation()
-    }
-    if (action === left_arrow){
-      moveDodgerLeft()
-      e.preventDefault()
-      e.stopPropagation()
-    }
-  }
-
-  function moveDodgerUp() {
+  function moveUp() {
     window.requestAnimationFrame(function() {
       const top = positionToInteger(flyingGir.style.top)
-      // console.log(top)
       if (top > 10){
         flyingGir.style.top = `${top-18}px`;
       }
     })
   }
 
-  function moveDodgerDown() {
+  function moveDown() {
     window.requestAnimationFrame(function(){
       const down = positionToInteger(flyingGir.style.top)
       if (down + 110 < game_height){
@@ -174,7 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
   }
 
-  function moveDodgerRight() {
+  function moveRight() {
     window.requestAnimationFrame(function() {
       const left = positionToInteger(flyingGir.style.left)
       if (left){
@@ -187,7 +162,7 @@ document.addEventListener('DOMContentLoaded', function() {
     })
   }
 
-  function moveDodgerLeft() {
+  function moveLeft() {
     window.requestAnimationFrame(function() {
       const left = positionToInteger(flyingGir.style.left)
       if (left){
@@ -261,14 +236,14 @@ document.addEventListener('DOMContentLoaded', function() {
       let beeObject = this;
       let speed = beeObject.generateSpeed();
       let vLocation = beeObject.generateVertialLocation();
-      beesArr.push(newBeee);
 
-      newBeee.className = "rock";
+      newBeee.className = "bee";
       newBeee.style.top = vLocation + "px";
       newBeee.id = this.id;
       newBeee.style.left = `${window.innerWidth - 40}px`;
       game.appendChild(newBeee);
       this.addListener(newBeee);
+      beesArr.push(newBeee);
 
       function moveBee() {
         if (gameEnd || beeObject.dead){
@@ -299,15 +274,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addListener(elementInstance){
       elementInstance.addEventListener("click", function(e){
-        console.log(this);
         debugger;
         // this.remove();
       })
     }
 
     generateSpeed(){
-      // return Math.floor(Math.random() * (20 - 5)) + 5;
-      return 1;
+      return Math.floor(Math.random() * (20 - 5)) + 5;
+      // FOR TESTING PURPOSES:
+      // return .5;
     }
 
     generateVertialLocation(){
@@ -338,6 +313,7 @@ document.addEventListener('DOMContentLoaded', function() {
   class Laser {
     constructor(type = "regular") {
       this.id = ++laserId;
+      laserObjs[laserId] = this;
       this.createSelf();
     }
 
@@ -375,6 +351,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     checkCollision(laser) {
+      let i = 0;
       for (const bee of beesArr){
         let laserTopEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, "")) - 10;
         let laserBottomEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, "")) + 10;
@@ -390,10 +367,13 @@ document.addEventListener('DOMContentLoaded', function() {
           let beeOb = beesObjs[bee.id];
           beeOb["dead"] = true;
           delete beesObjs[bee.id];
-          beesArr.splice(bee);
+          beesArr.splice(i, 1);
           bee.remove();
+          laser.remove();
+          delete laserObjs[laser.id];
           return true;
         };
+        ++i;
       }
 
     }
@@ -406,6 +386,27 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   //Supporting functions
+
+  function keyPressHandler(e) {
+    // if (gameEnd === true){
+      let action = e.which
+      e.preventDefault()
+      e.stopPropagation()
+      if (e.keyCode === 13 || e.target.dataset.pause === "pauseGame") {
+        pauseGame(e);
+      }else if (e.keyCode === 32){
+        shoot();
+      }else if (action === up_arrow){
+        moveUp()
+      }else if (action === down_arrow){
+        moveDown()
+      }else if (action === right_arrow){
+        moveRight()
+      }else if (action === left_arrow){
+        moveLeft()
+      }
+    // }
+  }
 
   function updateScore() {
     let scoreNumber = document.getElementById("scorenumber");
@@ -420,33 +421,25 @@ document.addEventListener('DOMContentLoaded', function() {
     return parseInt(num.replace(/[^0-9.]/g, ""));
   }
 
-  function deleteAllRocks() {
-    for (const rock of beesArr) {
-      rock.remove();
+  function deleteAllElements(arr) {
+    for (const element of arr) {
+      element.remove();
     }
   }
 
   function pauseGame(e) {
-    let action = e.target.dataset.pause
-    if (action === "pauseGame") {
-      alert("Game paused. Click OK to resume")
-    }
-    if (e.keyCode === 13) {
-      alert("Game paused. Click OK to resume")
-    }
+    alert("Game paused. Click OK to resume")
   }
 
   function shoot(e){
-    if (e.keyCode === 32){
-      new Laser;
-    }
+    new Laser;
   }
 
-  scoreSubmit.addEventListener("submit", (e) => {
-    e.preventDefault()
-    let name = document.getElementById('score-input')
-    name.value
-  });
+  // scoreSubmit.addEventListener("submit", (e) => {
+  //   e.preventDefault()
+  //   let name = document.getElementById('score-input')
+  //   name.value
+  // });
 
   function toggleInstructions() {
     if (instructionsDisplay.style.visibility === "hidden" || instructionsDisplay.style.display === "none") {
