@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let beesArr = [];
   let beesObjs = {};
   const lasersArr = [];
-  const laserObjs = {};
+  const lasersObjs = {};
   let score = 0;
   let timerId
 
@@ -58,7 +58,11 @@ document.addEventListener('DOMContentLoaded', function() {
   
   playAgain.addEventListener("click", resetGame); 
   pause.addEventListener('click', pauseGame);
-  window.addEventListener('keydown', keyPressHandler);
+
+  if (gameEnd === true) {
+    console.log("game is paused.");
+    window.addEventListener('keydown', keyPressHandler);
+  }
 
 
   // GAME START / STOP / RESET FUNCTIONS
@@ -71,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function() {
     blink(stages);
     bgLoop();
     game.appendChild(flyingGir);
-    window.addEventListener('keydown', keyPressHandler);
+    gameEnd = false;
+    // window.addEventListener('keydown', keyPressHandler);
     timerId = setTimeout(function request() {
       new Bee;
       rockGenerateTime -= 10;
@@ -96,7 +101,7 @@ document.addEventListener('DOMContentLoaded', function() {
     show(modal, "table-cell");
     show(scoreSubmit);
 
-    window.removeEventListener('keydown', keyPressHandler);
+    // window.removeEventListener('keydown', keyPressHandler);
     var closeButton = document.getElementsByClassName("close")[0];
     finalScore.innerText = "Your Score: " + score;
 
@@ -313,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function() {
   class Laser {
     constructor(type = "regular") {
       this.id = ++laserId;
-      laserObjs[laserId] = this;
+      lasersObjs[laserId] = this;
       this.createSelf();
     }
 
@@ -325,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
       pew.style.top = (parseInt(flyingGir.style.top.replace(/[^0-9.]/g, "")) + 45) + "px";
       pew.style.left = (parseInt(flyingGir.style.left.replace(/[^0-9.]/g, "")) + 80) + "px";
       game.appendChild(pew);
+      lasersArr.push(pew);
 
       function shootLaser() {
         if (gameEnd) {
@@ -370,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function() {
           beesArr.splice(i, 1);
           bee.remove();
           laser.remove();
-          delete laserObjs[laser.id];
+          delete lasersObjs[laser.id];
           return true;
         };
         ++i;
@@ -388,7 +394,7 @@ document.addEventListener('DOMContentLoaded', function() {
   //Supporting functions
 
   function keyPressHandler(e) {
-    // if (gameEnd === true){
+    // if (gameEnd === false){
       let action = e.which
       e.preventDefault()
       e.stopPropagation()
