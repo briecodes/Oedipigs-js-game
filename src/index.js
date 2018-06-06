@@ -299,13 +299,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     addListener(elementInstance){
       elementInstance.addEventListener("click", function(e){
-        this.remove();
+        console.log(this);
+        debugger;
+        // this.remove();
       })
     }
 
     generateSpeed(){
-      return Math.floor(Math.random() * (20 - 5)) + 5;
-      // return 2;
+      // return Math.floor(Math.random() * (20 - 5)) + 5;
+      return 1;
     }
 
     generateVertialLocation(){
