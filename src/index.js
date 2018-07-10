@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // EVENT LISTENERS
   highScoresLink.addEventListener("click", function(e){
     toggleOverlayElement(highScoresDisplay);
-    fetchScores(highScoresDisplay);
+    fetchScores(homePageScores);
   });
 
   highScoresDisplay.addEventListener("click", function(e){
@@ -139,18 +139,17 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Error!', array);
         displayScores([{initials: 'TST', score: 329}, {initials: 'PSE', score: 140}, {initials: 'DMT', score: 250}]);
       }else{
-        displayScores(array);
+        displayScores(array, element);
       }
     });
   };
   
-  function displayScores(arr) {
-    alert('no internet');
-    arr.forEach(score => {
-      const li = document.createElement('LI');
+  function displayScores(arr, element) {
+    for (const score of arr){
+      const li = document.createElement('li');
       li.innerHTML = `<span class='name'>${score.initials}</span> . . . <span class='score-num'>${score.score}</span>`;
       element.appendChild(li);
-    });
+    };
   }
 
   function submitScore(init, score) {
@@ -166,6 +165,12 @@ document.addEventListener('DOMContentLoaded', function() {
         displayScores(response);
       }
     });
+  };
+
+  function clearScores() {
+    while ( homePageScores.hasChildNodes() ) {
+      homePageScores.removeChild(homePageScores.lastChild);
+    }; 
   };
 
   function resetGame() {
@@ -495,7 +500,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // });
 
   function toggleOverlayElement(element) {
-    console.log('element', element.style.visibility);
     if (element.style.visibility === "hidden" || element.style.display === "none") {
       show(element);
       hide(mainNav);
@@ -503,6 +507,7 @@ document.addEventListener('DOMContentLoaded', function() {
       show(mainNav);
       hide(instructionsDisplay);
       hide(highScoresDisplay);
+      clearScores();
     }
   }
 
