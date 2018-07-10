@@ -11,7 +11,7 @@ CSS STYLING BROKEN DOWN BY SCREEN LAYOUT, FROM LARGEST ELEMENTS TO SMALLEST.
 /* ----------- GENERAL LAYOUT ----------- */
 
 body{
-  font-family: 'Amatic SC', cursive;
+  font-family: 'Amatic SC', 'helvetica';
   background-image: url('../assets/starry_bg.gif');
   background-repeat: repeat;
   padding: 0px;

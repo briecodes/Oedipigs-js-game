@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const highScoresDisplay = document.getElementById('high-scores-container');
   highScoresDisplay.style.visibility = "hidden"
   highScoresDisplay.style.display = "none"
+  const homePageScores = document.getElementById('homePageScores');
   const mainNav = document.getElementById('main-nav');
   const instructionsBtn = document.getElementById("instructions_link");
 
@@ -136,15 +137,21 @@ document.addEventListener('DOMContentLoaded', function() {
     fetch('http://localhost:3000/api/v1/gea').then( response => response.json() ).then( array => {
       if (array.error || array.errors){
         console.log('Error!', array);
+        displayScores([{initials: 'TST', score: 329}, {initials: 'PSE', score: 140}, {initials: 'DMT', score: 250}]);
       }else{
-        array.forEach(score => {
-          const li = document.createElement('LI');
-          li.innerHTML = `<span class='name'>${score.initials}</span> . . . <span class='score-num'>${score.score}</span>`;
-          element.appendChild(li);
-        });
+        displayScores(array);
       }
     });
   };
+  
+  function displayScores(arr) {
+    alert('no internet');
+    arr.forEach(score => {
+      const li = document.createElement('LI');
+      li.innerHTML = `<span class='name'>${score.initials}</span> . . . <span class='score-num'>${score.score}</span>`;
+      element.appendChild(li);
+    });
+  }
 
   function submitScore(init, score) {
     fetch('http://localhost:3000/api/v1/gea', {
@@ -154,7 +161,10 @@ document.addEventListener('DOMContentLoaded', function() {
     }).then (res => res.json() ).then( response => {
       if (response.errors || response.error) {
         console.log('Warning! Error!', response)
-      };
+      }else{
+        fetchScores();
+        displayScores(response);
+      }
     });
   };
 
