@@ -91,6 +91,17 @@ table{
   display: none;
 }
 
+#high-scores-container {
+  color: #fefefe;
+  position: relative;
+  width: 80%;
+  z-index: 2;
+  margin-left: 10%;
+  margin-right: 10%;
+  visibility: hidden;
+  display: none;
+}
+
 .instruction-cell {
   /* background: magenta; */
   text-align: center;
@@ -124,6 +135,10 @@ table{
   color: white;
   position: relative;
   text-decoration: none;
+}
+
+.start_screen_links:hover {
+  color: yellow;
 }
 
 .keys {

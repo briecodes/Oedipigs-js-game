@@ -15,6 +15,14 @@ document.addEventListener('DOMContentLoaded', function() {
   const modal = document.getElementById('myModal');
   const scoreSubmit = document.getElementById('score-form');
   const instructionsDisplay = document.getElementById("instructions");
+  instructionsDisplay.style.visibility = "hidden"
+  instructionsDisplay.style.display = "none"
+
+  const highScoresLink = document.getElementById('highscores_link');
+  const highScoresDisplay = document.getElementById('high-scores-container');
+  highScoresDisplay.style.visibility = "hidden"
+  highScoresDisplay.style.display = "none"
+  const mainNav = document.getElementById('main-nav');
   const instructionsBtn = document.getElementById("instructions_link");
 
   //other
@@ -44,12 +52,21 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // EVENT LISTENERS
+  highScoresLink.addEventListener("click", function(e){
+    toggleOverlayElement(highScoresDisplay);
+    fetchScores(highScoresDisplay);
+  });
+
+  highScoresDisplay.addEventListener("click", function(e){
+    toggleOverlayElement(highScoresDisplay);
+  });
+
   instructionsDisplay.addEventListener("click", function(e){
-    toggleInstructions();
+    toggleOverlayElement(instructionsDisplay);
   });
 
   instructionsBtn.addEventListener("click", function(e){
-    toggleInstructions();
+    toggleOverlayElement(instructionsDisplay);
   });
 
   startBtn.addEventListener("click", function(e){
@@ -114,6 +131,32 @@ document.addEventListener('DOMContentLoaded', function() {
     //   scoreSubmit.style.display="none"
     // })
   }
+
+  function fetchScores(element) {
+    fetch('http://localhost:3000/api/v1/gea').then( response => response.json() ).then( array => {
+      if (array.error || array.errors){
+        console.log('Error!', array);
+      }else{
+        array.forEach(score => {
+          const li = document.createElement('LI');
+          li.innerHTML = `<span class='name'>${score.initials}</span> . . . <span class='score-num'>${score.score}</span>`;
+          element.appendChild(li);
+        });
+      }
+    });
+  };
+
+  function submitScore(init, score) {
+    fetch('http://localhost:3000/api/v1/gea', {
+      method: 'POST',
+      body: JSON.stringify({initials: init, score: score}),
+      headers: {'Content-Type': 'application/json'}
+    }).then (res => res.json() ).then( response => {
+      if (response.errors || response.error) {
+        console.log('Warning! Error!', response)
+      };
+    });
+  };
 
   function resetGame() {
     rockGenerateTime = 810;
@@ -441,11 +484,15 @@ document.addEventListener('DOMContentLoaded', function() {
   //   name.value
   // });
 
-  function toggleInstructions() {
-    if (instructionsDisplay.style.visibility === "hidden" || instructionsDisplay.style.display === "none") {
-      show(instructionsDisplay);
+  function toggleOverlayElement(element) {
+    console.log('element', element.style.visibility);
+    if (element.style.visibility === "hidden" || element.style.display === "none") {
+      show(element);
+      hide(mainNav);
     } else {
+      show(mainNav);
       hide(instructionsDisplay);
+      hide(highScoresDisplay);
     }
   }
 
