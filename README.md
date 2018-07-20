@@ -17,7 +17,8 @@ No tests provided.
 
 
 ## How to Use
-Setup Rails API backend <link>. Open index.html in the Chrome or Safari browser.
+Setup [Rails API backend](https://github.com/briecodes/girs-endless-adventure-backend).<br/>
+Open index.html in the Chrome or Safari browser.
 
 
 ## Contribute
