@@ -60,6 +60,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // EVENT LISTENERS
+  playAgain.addEventListener('click', resetGame); 
+  pause.addEventListener('click', pauseGame);
+
   highScoresLink.addEventListener('click', function(){
     toggleOverlayElement(highScoresDisplay);
     fetchScores(homePageScores);
@@ -92,9 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
       scoreSubmit.style.display='none';
   });
   
-  playAgain.addEventListener('click', resetGame); 
-  pause.addEventListener('click', pauseGame);
-  window.addEventListener('keydown', keyPressHandler);
+  
 
 
   // GAME START / STOP / RESET FUNCTIONS
@@ -135,20 +136,6 @@ document.addEventListener('DOMContentLoaded', function() {
     window.removeEventListener('keydown', keyPressHandler);
     var closeButton = document.getElementsByClassName('close')[0];
     finalScore.innerText = 'Your Score: ' + score;
-
-    // scoreSubmit.addEventListener('submit', (e) => {
-    //   e.preventDefault()
-    //   let name = document.getElementById('name-input')
-
-    //   fetch(USERS_URL, {
-    //     method: 'POST',
-    //     headers: {'Content-Type':'application/json'},
-    //     body: JSON.stringify(
-    //     {name: `${name.value}`,
-    //     score: score})
-    //   }).then(response => response.json()).then(json => console.log(json))
-    //   scoreSubmit.style.display='none'
-    // })
   }
 
   function fetchScores(element) {
