@@ -150,6 +150,7 @@ table{
 
 .start_screen_links:hover {
   color: yellow;
+  cursor: pointer;
 }
 
 .keys {

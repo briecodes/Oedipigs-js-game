@@ -1,37 +1,40 @@
 document.addEventListener('DOMContentLoaded', function() {
 
   // GRAB HTML ELEMENTS AND DECLARE VARAIBLES
-  const game = document.getElementById("game");
-  const startBtn = document.getElementById("start");
-  const overlay = document.getElementById("overlay");
-  const pause = document.getElementById("pause");
-  const score_display = document.getElementById("score");
-  const playAgain = document.getElementById("playAgain");
+  const game = document.getElementById('game');
+  const startBtn = document.getElementById('start');
+  const overlay = document.getElementById('overlay');
+  const pause = document.getElementById('pause');
+  const score_display = document.getElementById('score');
+  const playAgain = document.getElementById('playAgain');
   const game_height = window.innerHeight;
   const game_width = window.innerWidth;
-  const homeScreen = document.getElementById("start-screen");
-  const finalScore = document.getElementById("final-score");
-  const stages = document.getElementById("stages");
+  const homeScreen = document.getElementById('start-screen');
+  const finalScore = document.getElementById('final-score');
+  const stages = document.getElementById('stages');
   const modal = document.getElementById('myModal');
   const scoreSubmit = document.getElementById('score-form');
-  const instructionsDisplay = document.getElementById("instructions");
-  instructionsDisplay.style.visibility = "hidden"
-  instructionsDisplay.style.display = "none"
+  const instructionsDisplay = document.getElementById('instructions');
+  instructionsDisplay.style.visibility = 'hidden'
+  instructionsDisplay.style.display = 'none'
 
   const highScoresLink = document.getElementById('highscores_link');
   const highScoresDisplay = document.getElementById('high-scores-container');
-  highScoresDisplay.style.visibility = "hidden"
-  highScoresDisplay.style.display = "none"
+  highScoresDisplay.style.visibility = 'hidden'
+  highScoresDisplay.style.display = 'none'
   const homePageScores = document.getElementById('homePageScores');
   const mainNav = document.getElementById('main-nav');
-  const instructionsBtn = document.getElementById("instructions_link");
+  const instructionsBtn = document.getElementById('instructions_link');
+
+  const submitBtn = document.getElementById('submit');
+  const nameInput = document.getElementById('name-input');
 
   //other
   const up_arrow = 38;
   const down_arrow = 40;
   const right_arrow = 39;
   const left_arrow = 37;
-  let bg = document.createElement("div");
+  let bg = document.createElement('div');
   let rockGenerateTime = 810;
   let gameInterval = null;
   let gameEnd = false;
@@ -43,8 +46,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let timerId
 
   // CREATE GIR
-  let flyingGir = document.createElement("div");
-  flyingGir.setAttribute("id", "gir");
+  let flyingGir = document.createElement('div');
+  flyingGir.setAttribute('id', 'gir');
   flyingGir.style.width = '91px';
   flyingGir.style.height = '100px';
   flyingGir.style.top = '280px';
@@ -53,28 +56,39 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
   // EVENT LISTENERS
-  highScoresLink.addEventListener("click", function(e){
+  highScoresLink.addEventListener('click', function(){
     toggleOverlayElement(highScoresDisplay);
     fetchScores(homePageScores);
   });
 
-  highScoresDisplay.addEventListener("click", function(e){
+  highScoresDisplay.addEventListener('click', function(){
     toggleOverlayElement(highScoresDisplay);
   });
 
-  instructionsDisplay.addEventListener("click", function(e){
+  instructionsDisplay.addEventListener('click', function(){
     toggleOverlayElement(instructionsDisplay);
   });
 
-  instructionsBtn.addEventListener("click", function(e){
+  instructionsBtn.addEventListener('click', function(){
     toggleOverlayElement(instructionsDisplay);
   });
 
-  startBtn.addEventListener("click", function(e){
+  startBtn.addEventListener('click', function(){
     startGame();
   });
+
+  submitBtn.addEventListener('click', function(e){
+    e.preventDefault();
+
+    fetch('http://localhost:3000/api/v1/gea', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify({initials: nameInput.value.toUpperCase(), score: score})
+      }).then(response => response.json()).then(json => console.log(json));
+      scoreSubmit.style.display='none';
+  });
   
-  playAgain.addEventListener("click", resetGame); 
+  playAgain.addEventListener('click', resetGame); 
   pause.addEventListener('click', pauseGame);
   window.addEventListener('keydown', keyPressHandler);
 
@@ -110,17 +124,17 @@ document.addEventListener('DOMContentLoaded', function() {
     hide(score_display);
     hide(stages);
     hide(homeScreen);
-    show(overlay, "table");
-    show(modal, "table-cell");
+    show(overlay, 'table');
+    show(modal, 'table-cell');
     show(scoreSubmit);
 
     window.removeEventListener('keydown', keyPressHandler);
-    var closeButton = document.getElementsByClassName("close")[0];
-    finalScore.innerText = "Your Score: " + score;
+    var closeButton = document.getElementsByClassName('close')[0];
+    finalScore.innerText = 'Your Score: ' + score;
 
-    // scoreSubmit.addEventListener("submit", (e) => {
+    // scoreSubmit.addEventListener('submit', (e) => {
     //   e.preventDefault()
-    //   let name = document.getElementById('score-input')
+    //   let name = document.getElementById('name-input')
 
     //   fetch(USERS_URL, {
     //     method: 'POST',
@@ -129,7 +143,7 @@ document.addEventListener('DOMContentLoaded', function() {
     //     {name: `${name.value}`,
     //     score: score})
     //   }).then(response => response.json()).then(json => console.log(json))
-    //   scoreSubmit.style.display="none"
+    //   scoreSubmit.style.display='none'
     // })
   }
 
@@ -139,7 +153,8 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('Error!', array);
         displayScores([{initials: 'TST', score: 329}, {initials: 'PSE', score: 140}, {initials: 'DMT', score: 250}]);
       }else{
-        displayScores(array, element);
+        array.sort((a,b) => b.score - a.score);
+        displayScores(array.slice(0, 4), element);
       }
     });
   };
@@ -181,10 +196,10 @@ document.addEventListener('DOMContentLoaded', function() {
     deleteAllElements(beesArr);
 
     hide(modal);
-    show(homeScreen, "table-cell");
+    show(homeScreen, 'table-cell');
     
-    flyingGir.style.top = "280px";
-    flyingGir.style.left = "25px";
+    flyingGir.style.top = '280px';
+    flyingGir.style.left = '25px';
     
     gameEnd = false;
   }
@@ -280,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let beeId = 0;
 
   class Bee {
-    constructor(type="regular") {
+    constructor(type='regular') {
       this.bee = `bee${++beeId}`;
       this.type = type;
       this.id = beeId;
@@ -290,13 +305,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     createSelf() {
-      let newBeee = document.createElement("div");
+      let newBeee = document.createElement('div');
       let beeObject = this;
       let speed = beeObject.generateSpeed();
       let vLocation = beeObject.generateVertialLocation();
 
-      newBeee.className = "bee";
-      newBeee.style.top = vLocation + "px";
+      newBeee.className = 'bee';
+      newBeee.style.top = vLocation + 'px';
       newBeee.id = this.id;
       newBeee.style.left = `${window.innerWidth - 40}px`;
       game.appendChild(newBeee);
@@ -306,7 +321,7 @@ document.addEventListener('DOMContentLoaded', function() {
       function moveBee() {
         if (gameEnd || beeObject.dead){
         }else{
-          let left = newBeee.style.left.replace(/[^0-9.]/g, "");
+          let left = newBeee.style.left.replace(/[^0-9.]/g, '');
           if (beeObject.checkCollision(newBeee)) {
             beeObject.destroySelf(newBeee);
             return endGame();
@@ -331,7 +346,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     addListener(elementInstance){
-      elementInstance.addEventListener("click", function(e){
+      elementInstance.addEventListener('click', function(e){
         debugger;
         // this.remove();
       })
@@ -348,15 +363,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     checkCollision(bee) {
-      let girTopEdge = parseInt(flyingGir.style.top.replace(/[^0-9.]/g, "")) - 30;
-      let girBottomEdge = parseInt(flyingGir.style.top.replace(/[^0-9.]/g, "")) + 170;
-      let girLeftEdge = parseInt(flyingGir.style.left.replace(/[^0-9.]/g, ""));
-      let girRightEdge = parseInt(flyingGir.style.left.replace(/[^0-9.]/g, "")) + parseInt(flyingGir.style.width.replace(/[^0-9.]/g, "")) + 85;
+      let girTopEdge = parseInt(flyingGir.style.top.replace(/[^0-9.]/g, '')) - 30;
+      let girBottomEdge = parseInt(flyingGir.style.top.replace(/[^0-9.]/g, '')) + 170;
+      let girLeftEdge = parseInt(flyingGir.style.left.replace(/[^0-9.]/g, ''));
+      let girRightEdge = parseInt(flyingGir.style.left.replace(/[^0-9.]/g, '')) + parseInt(flyingGir.style.width.replace(/[^0-9.]/g, '')) + 85;
 
-      let beeTopEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, "")) - 10;
-      let beeBottomEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, "")) + 80;
-      let beeLeftEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, "")); 
-      let beeRightEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, "")) + 80;
+      let beeTopEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, '')) - 10;
+      let beeBottomEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, '')) + 80;
+      let beeLeftEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, '')); 
+      let beeRightEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, '')) + 80;
 
       if (beeTopEdge > girTopEdge && beeBottomEdge < girBottomEdge && beeLeftEdge > girLeftEdge && beeRightEdge < girRightEdge) {
         return true
@@ -369,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function() {
   let laserId = 0;
 
   class Laser {
-    constructor(type = "regular") {
+    constructor(type = 'regular') {
       this.id = ++laserId;
       laserObjs[laserId] = this;
       this.createSelf();
@@ -377,17 +392,17 @@ document.addEventListener('DOMContentLoaded', function() {
 
     createSelf() {
       let laserObject = this;
-      let pew = document.createElement("div");
-      pew.setAttribute("class", "laser");
+      let pew = document.createElement('div');
+      pew.setAttribute('class', 'laser');
       pew.id = this.id;
-      pew.style.top = (parseInt(flyingGir.style.top.replace(/[^0-9.]/g, "")) + 45) + "px";
-      pew.style.left = (parseInt(flyingGir.style.left.replace(/[^0-9.]/g, "")) + 80) + "px";
+      pew.style.top = (parseInt(flyingGir.style.top.replace(/[^0-9.]/g, '')) + 45) + 'px';
+      pew.style.left = (parseInt(flyingGir.style.left.replace(/[^0-9.]/g, '')) + 80) + 'px';
       game.appendChild(pew);
 
       function shootLaser() {
         if (gameEnd) {
         } else {
-          let left = parseInt(pew.style.left.replace(/[^0-9.]/g, ""));
+          let left = parseInt(pew.style.left.replace(/[^0-9.]/g, ''));
           if (laserObject.checkCollision(pew)) {
             score += 30;
             updateScore();
@@ -411,19 +426,19 @@ document.addEventListener('DOMContentLoaded', function() {
     checkCollision(laser) {
       let i = 0;
       for (const bee of beesArr){
-        let laserTopEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, "")) - 10;
-        let laserBottomEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, "")) + 10;
-        let laserLeftEdge = parseInt(laser.style.left.replace(/[^0-9.]/g, ""));
-        let laserRightEdge = parseInt(laser.style.left.replace(/[^0-9.]/g, "")) + 30;
+        let laserTopEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, '')) - 10;
+        let laserBottomEdge = parseInt(laser.style.top.replace(/[^0-9.]/g, '')) + 10;
+        let laserLeftEdge = parseInt(laser.style.left.replace(/[^0-9.]/g, ''));
+        let laserRightEdge = parseInt(laser.style.left.replace(/[^0-9.]/g, '')) + 30;
 
-        let beeTopEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, "")) - 10;
-        let beeBottomEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, "")) + 80;
-        let beeLeftEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, ""));
-        let beeRightEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, "")) + 80;
+        let beeTopEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, '')) - 10;
+        let beeBottomEdge = parseInt(bee.style.top.replace(/[^0-9.]/g, '')) + 80;
+        let beeLeftEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, ''));
+        let beeRightEdge = parseInt(bee.style.left.replace(/[^0-9.]/g, '')) + 80;
 
         if (laserTopEdge > beeTopEdge && laserBottomEdge < beeBottomEdge && laserLeftEdge > beeLeftEdge && laserRightEdge < beeRightEdge) {
           let beeOb = beesObjs[bee.id];
-          beeOb["dead"] = true;
+          beeOb['dead'] = true;
           delete beesObjs[bee.id];
           beesArr.splice(i, 1);
           bee.remove();
@@ -450,7 +465,7 @@ document.addEventListener('DOMContentLoaded', function() {
       let action = e.which
       e.preventDefault()
       e.stopPropagation()
-      if (e.keyCode === 13 || e.target.dataset.pause === "pauseGame") {
+      if (e.keyCode === 13 || e.target.dataset.pause === 'pauseGame') {
         pauseGame(e);
       }else if (e.keyCode === 32){
         shoot();
@@ -467,7 +482,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function updateScore() {
-    let scoreNumber = document.getElementById("scorenumber");
+    let scoreNumber = document.getElementById('scorenumber');
     scoreNumber.innerText = score;
   }
 
@@ -476,7 +491,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function pTi(num) {
-    return parseInt(num.replace(/[^0-9.]/g, ""));
+    return parseInt(num.replace(/[^0-9.]/g, ''));
   }
 
   function deleteAllElements(arr) {
@@ -486,21 +501,21 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function pauseGame(e) {
-    alert("Game paused. Click OK to resume")
+    alert('Game paused. Click OK to resume')
   }
 
   function shoot(e){
     new Laser;
   }
 
-  // scoreSubmit.addEventListener("submit", (e) => {
+  // scoreSubmit.addEventListener('submit', (e) => {
   //   e.preventDefault()
-  //   let name = document.getElementById('score-input')
+  //   let name = document.getElementById('name-input')
   //   name.value
   // });
 
   function toggleOverlayElement(element) {
-    if (element.style.visibility === "hidden" || element.style.display === "none") {
+    if (element.style.visibility === 'hidden' || element.style.display === 'none') {
       show(element);
       hide(mainNav);
     } else {
@@ -513,13 +528,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function blink(element) {
     setTimeout(function () {
-      element.style.visibility = "hidden";
+      element.style.visibility = 'hidden';
       setTimeout(function () {
-        element.style.visibility = "visible";
+        element.style.visibility = 'visible';
         setTimeout(function () {
-          element.style.visibility = "hidden";
+          element.style.visibility = 'hidden';
           setTimeout(function () {
-            element.style.visibility = "visible";
+            element.style.visibility = 'visible';
           }, 200);
         }, 200);
       }, 200);
@@ -528,26 +543,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
   function stageSet(time) {
     if (time <= 800 && time >= 600) {
-      stages.innerText = "Stage 1";
+      stages.innerText = 'Stage 1';
     } else if (time <= 599 && time >= 400) {
-      stages.innerText = "Stage 2";
+      stages.innerText = 'Stage 2';
     } else if (time <= 399 && time > 120) {
-      stages.innerText = "Stage 3";
+      stages.innerText = 'Stage 3';
     } else {
-      stages.innerText = "SUDDEN DEATH";
-      stages.style.color = "red";
+      stages.innerText = 'SUDDEN DEATH';
+      stages.style.color = 'red';
       blink(stages);
     }
   }
 
-  function show(elem, stat = "block") {
-    elem.style.visibility = "visible";
+  function show(elem, stat = 'block') {
+    elem.style.visibility = 'visible';
     elem.style.display = stat;
   }
 
   function hide(elem) {
-    elem.style.visibility = "hidden";
-    elem.style.display = "none";
+    elem.style.visibility = 'hidden';
+    elem.style.display = 'none';
   }
 
 });

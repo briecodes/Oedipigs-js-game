@@ -2,71 +2,74 @@
 <html>
   <head>
     <title>Gir’s Endless Adventure</title>
-    <link rel="icon" href="assets/bee2.png">
-    <link rel="stylesheet" type="text/css" href="src/styles.css">
-    <link href="https://fonts.googleapis.com/css?family=Press+Start+2P" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Amatic+SC:400,700" rel="stylesheet">
+    <link rel='icon' href='assets/bee2.png'>
+    <link rel='stylesheet' type='text/css' href='src/styles.css'>
+    <link href='https://fonts.googleapis.com/css?family=Press+Start+2P' rel='stylesheet'>
+    <link href='https://fonts.googleapis.com/css?family=Amatic+SC:400,700' rel='stylesheet'>
   </head>
 
   <body>
-    <div id="game">
+    <div id='game'>
 
-      <div class="pauseBtn" id="pause" data-pause="pauseGame"></div>
-      <div id="score">SCORE:
-        <span id="scorenumber">0</span>
+      <div class='pauseBtn' id='pause' data-pause='pauseGame'></div>
+      <div id='score'>SCORE:
+        <span id='scorenumber'>0</span>
       </div>
 
-      <h1 id="stages">Stage One</h1>
+      <h1 id='stages'>Stage One</h1>
 
-      <div id="overlay">
-        <div id="start-screen">
+      <div id='overlay'>
+        <div id='start-screen'>
           <div>
             <div id='main-nav'>
-              <div class="solo-bee"></div>
-              <h4 class="minor">Gir’s</h4>
-              <div id="standing-gir"></div>
-              <h1 class="headline">ENDLESS ADVENUTRE</h1>
-              <div class="divider"></div>
+              <div class='solo-bee'></div>
+              <h4 class='minor'>Gir’s</h4>
+              <div id='standing-gir'></div>
+              <h1 class='headline'>ENDLESS ADVENUTRE</h1>
+              <div class='divider'></div>
               <p>
-                  <a href="#" class="start_screen_links" id="start" >
+                  <span class='start_screen_links' id='start' >
                     START >
-                  </a>
+                  </span>
               </p>
 
               <p>
-                <a href="#" class="start_screen_links" id="instructions_link">
+                <span class='start_screen_links' id='instructions_link'>
                   INSTRUCTIONS >
-                </a>
+                </span>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <a href="#" class="start_screen_links" id="highscores_link">
+                <span class='start_screen_links' id='highscores_link'>
                   HIGH SCORES >
-                </a>
+                </span>
               </p>
             </div>
 
-            <div id="instructions">
+            <div id='instructions'>
               INSTRUCTIONS<br /><br />
               <div class='spacer'></div>
-              <div class="instruction-cell">This is you:
+              <div class='instruction-cell'>This is you:
                 <br>
-                <img class="thumb" src="assets/gir.png" alt="Ship">
+                <img class='thumb' src='assets/gir.png' alt='Ship'>
               </div>
-              <div class="instruction-cell">You move with these:
+              <div class='instruction-cell'>You move with these:
                 <br>
-                <img class="thumb" src="assets/arrow_keys.png" alt="Up/Down Arrow Keys">
+                <img class='thumb' src='assets/arrow_keys.png' alt='Up/Down Arrow Keys'>
               </div>
-              <div class="instruction-cell">Avoid:
+              <div class='instruction-cell'>Avoid:
                 <br>
-                <img class="thumb" src="assets/bee.png" alt="Avoid Fieri">
+                <img class='thumb' src='assets/bee.png' alt='Avoid Fieri'>
               </div>
-              <div class="clear"></div>
+              <div class='clear'></div>
               <br />
-                <a href="#" class="start_screen_links">GOT IT!</a>
+                <span class='start_screen_links'>GOT IT!</span>
             </div>
 
-            <div id="high-scores-container">
+            <div id='high-scores-container'>
               HIGH SCORES<br /><br />
               <ul id='homePageScores'></ul>
+              <div class='clear'></div>
+              <br />
+              <span class='start_screen_links'>CLOSE</span>
             </div>
           </div>
 
@@ -74,22 +77,22 @@
         </div> <!-- END #start-screen -->
 
         <!-- The Modal -->
-        <div id="myModal">
-          <div class="solo-bee2"></div>
+        <div id='myModal'>
+          <div class='solo-bee2'></div>
           <h4>WELCOME TO DOOM!</h4>
-          <h1 id="final-score" class="headline"></h1>
-          <div class="divider"></div>
+          <h1 id='final-score' class='headline'></h1>
+          <div class='divider'></div>
 
           <p>
-            <a href="#" class="start_screen_links" id="playAgain">Play Again ></a>
+            <span class='start_screen_links' id='playAgain'>Play Again ></span>
           </p>
 
-          <p id="hide-me">
-            <form id="score-form" class="score-form" action="index.html" method="post">
+          <p id='hide-me'>
+            <form id='score-form' class='score-form' action='index.html' method='post'>
               <center>
-                 <!-- <h6>Submit Your Name to the Leaderboard:</h6> -->
-                <!-- <input id="score-input" type="text" name="name" value="">
-                <button type="submit">Submit Score</button> -->
+                <h6>Submit Your Initials to the Leaderboard:</h6>
+                <input id='name-input' maxlength='3' style='text-transform:uppercase' type='text' name='name' value=''>
+                <button type='submit' id='submit'>Submit Score</button>
               </center>
             </form>
           </p>
@@ -98,6 +101,6 @@
       </div> <!-- END #overlay -->
     </div> <!-- END #game -->
 
-    <script src="src/index.js"></script>
+    <script src='src/index.js'></script>
   </body>
 </html>
