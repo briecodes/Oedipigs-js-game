@@ -57,6 +57,10 @@ li {
   list-style-type: none;
 }
 
+h6 {
+  margin-bottom: 0;
+}
+
 
 
 /* ----------- START SCREEN ----------- */
@@ -118,7 +122,7 @@ table{
   text-align: center;
   font-size: .75em;
   float: left;
-  width: 30%;
+  width: 21%;
   vertical-align: middle;
   margin-left: 1.66%;
   margin-right: 1.66%;

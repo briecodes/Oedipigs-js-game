@@ -24,11 +24,16 @@ document.addEventListener('DOMContentLoaded', function() {
   const closeHighScores = document.getElementById('closeHighScores');
   const highScoresLink = document.getElementById('highscores_link');
   const highScoresDisplay = document.getElementById('high-scores-container');
-  highScoresDisplay.style.visibility = 'hidden'
-  highScoresDisplay.style.display = 'none'
+  highScoresDisplay.style.visibility = 'hidden';
+  highScoresDisplay.style.display = 'none';
 
   const homePageScores = document.getElementById('homePageScores');
   const mainNav = document.getElementById('main-nav');
+
+  const endGameHighScores = document.getElementById('endGameHighScores');
+  const endGameHighScoresContainer = document.getElementById('endGameHighScoresContainer');
+  endGameHighScoresContainer.style.display = 'none';
+  endGameHighScoresContainer.style.visibility = 'hidden';
 
   const submitBtn = document.getElementById('submit');
   const nameInput = document.getElementById('name-input');
@@ -48,6 +53,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const laserObjs = {};
   let score = 0;
   let timerId
+
 
   // CREATE GIR
   let flyingGir = document.createElement('div');
@@ -91,11 +97,15 @@ document.addEventListener('DOMContentLoaded', function() {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
         body: JSON.stringify({initials: nameInput.value.toUpperCase(), score: score})
-      }).then(response => response.json()).then(json => console.log(json));
-      scoreSubmit.style.display='none';
+      }).then(response => response.json()).then(json => {
+        fetchScores(endGameHighScores);
+      });
+      show(endGameHighScoresContainer);
+      hide(scoreSubmit);
+      // scoreSubmit.style.display='none';
   });
   
-  
+
 
 
   // GAME START / STOP / RESET FUNCTIONS
@@ -174,9 +184,12 @@ document.addEventListener('DOMContentLoaded', function() {
   };
 
   function clearScores() {
-    while ( homePageScores.hasChildNodes() ) {
+    while ( homePageScores.hasChildNodes()) {
       homePageScores.removeChild(homePageScores.lastChild);
-    }; 
+    };
+    while ( endGameHighScores.hasChildNodes() ) {
+      endGameHighScores.removeChild(endGameHighScores.lastChild);
+    };
   };
 
   function resetGame() {
@@ -188,6 +201,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
     hide(modal);
     show(homeScreen, 'table-cell');
+
+    hide(endGameHighScoresContainer);
+    show(scoreSubmit);
+    clearScores();
     
     flyingGir.style.top = '280px';
     flyingGir.style.left = '25px';
