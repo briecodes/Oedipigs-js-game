@@ -14,17 +14,21 @@ document.addEventListener('DOMContentLoaded', function() {
   const stages = document.getElementById('stages');
   const modal = document.getElementById('myModal');
   const scoreSubmit = document.getElementById('score-form');
+
+  const closeInstructions = document.getElementById('closeInstructions');
+  const instructionsBtn = document.getElementById('instructions_link');
   const instructionsDisplay = document.getElementById('instructions');
   instructionsDisplay.style.visibility = 'hidden'
   instructionsDisplay.style.display = 'none'
 
+  const closeHighScores = document.getElementById('closeHighScores');
   const highScoresLink = document.getElementById('highscores_link');
   const highScoresDisplay = document.getElementById('high-scores-container');
   highScoresDisplay.style.visibility = 'hidden'
   highScoresDisplay.style.display = 'none'
+
   const homePageScores = document.getElementById('homePageScores');
   const mainNav = document.getElementById('main-nav');
-  const instructionsBtn = document.getElementById('instructions_link');
 
   const submitBtn = document.getElementById('submit');
   const nameInput = document.getElementById('name-input');
@@ -61,11 +65,11 @@ document.addEventListener('DOMContentLoaded', function() {
     fetchScores(homePageScores);
   });
 
-  highScoresDisplay.addEventListener('click', function(){
+  closeHighScores.addEventListener('click', function(){
     toggleOverlayElement(highScoresDisplay);
   });
 
-  instructionsDisplay.addEventListener('click', function(){
+  closeInstructions.addEventListener('click', function(){
     toggleOverlayElement(instructionsDisplay);
   });
 
@@ -154,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
         displayScores([{initials: 'TST', score: 329}, {initials: 'PSE', score: 140}, {initials: 'DMT', score: 250}]);
       }else{
         array.sort((a,b) => b.score - a.score);
-        displayScores(array.slice(0, 4), element);
+        displayScores(array.slice(0, 5), element);
       }
     });
   };
