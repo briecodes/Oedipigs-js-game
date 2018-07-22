@@ -1,5 +1,5 @@
 <h1 align="center">
-  <img src="../src/girs_endless_adventure.png" alt="Gir's Endless Adventure" width="160">
+  <img src="https://github.com/briecodes/girs-endless-adventure/blob/master/assets/girs_endless_adventure.png?raw=true" alt="Gir's Endless Adventure" width="500">
 </h1>
 
 ## Gir's Endless Adventure
